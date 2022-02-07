@@ -1,26 +1,22 @@
 version: '3.7'
 
 services:
-  dm_db:
-    image: postgres:10.1-alpine
+  web:
+    build: ./
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-  django:
-    container_name: db_movie
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    command: bash -c "python /usr/src/dm_rest/manage.py migrate --noinput &&
-             python /usr/src/dm_rest/manage.py runserver 0.0.0.0:8000"
-    volumes:
-      - .:/usr/src/dm_rest
+      - .:/usr/src/app/
     ports:
       - 8000:8000
-    depends_on:
-      - dm_db
+    env_file:
+      - ./.env
+  db:
+    image: postgres:12.0-alpine
+    volumes:
+      - dm_postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=hello_django
+      - POSTGRES_PASSWORD=hello_django
+      - POSTGRES_DB=hello_django_dev
 volumes:
-  postgres_data:
+  dm_postgres_data:

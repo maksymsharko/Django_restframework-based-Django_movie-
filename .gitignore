@@ -1,0 +1,5 @@
+.env.prod
+.env
+.env.prod.db
+media/
+movies/migrations
